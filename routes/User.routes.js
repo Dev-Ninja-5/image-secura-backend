@@ -8,7 +8,7 @@ const userRouter = express.Router();
 // R  E  G  I  S  T  E  R
 
 userRouter.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email,mobile, password } = req.body;
 
   // H A S H I N G
   try {
