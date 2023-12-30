@@ -18,7 +18,7 @@ userRouter.post("/register", async (req, res) => {
       } else {
         const user = new UserModel({
           name,
-          email,
+          email,mobile,
           password: hashed_password,
         });
         await user.save();
