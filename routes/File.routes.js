@@ -71,14 +71,12 @@ fileRouter.patch("/update/:id", async (req, res) => {
 fileRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
   let id = req.params.id;
 
-  let { name, description, excelFile } = req.body;
-  console.log("name", name, "desc", description);
+  let { name } = req.body;
+  console.log("name", name);
   console.log("reqFile", req.file);
   if (req.file) {
     const newFile = {
       name,
-      description,
-      excelFile,
       file: req.file.buffer.toString("base64"),
     };
     console.log("newFile", newFile);
