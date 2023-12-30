@@ -1,31 +1,31 @@
 const express = require("express");
-const { TestModel } = require("../models/Test.model");
+const {FileModel}=require("../models/File.model")
 const { noteData } = require("../controllers/Note.controller");
 const multer = require("multer");
 
-const testsRouter = express.Router();
+const fileRouter = express.Router();
 
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
 // G E T   R E Q U E S T
-testsRouter.get("/alltests", async (req, res) => {
+fileRouter.get("/alltests", async (req, res) => {
   console.log("inside get req");
   try {
-    const tests = await TestModel.find();
-    //console.log(tests);
-    res.status(200).send(tests);
+    const files = await FileModel.find();
+    //console.log(files);
+    res.status(200).send(files);
   } catch (err) {
     console.log(err);
   }
 });
 
 //S I N G L E   T E S T
-testsRouter.get("/:id", async (req, res) => {
+fileRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const test = await TestModel.findOne({ _id: id });
+    const test = await FileModel.findOne({ _id: id });
     console.log(test);
     res.status(200).send(test);
   } catch (err) {
@@ -33,11 +33,11 @@ testsRouter.get("/:id", async (req, res) => {
   }
 });
 // P O S T
-testsRouter.post("/create", async (req, res) => {
+fileRouter.post("/create", async (req, res) => {
   const payload = req.body;
 
   try {
-    const new_Test = new TestModel(payload);
+    const new_Test = new FileModel(payload);
     await new_Test.save();
     res.send({ msg: "Testroom Created" });
   } catch (err) {
@@ -47,10 +47,10 @@ testsRouter.post("/create", async (req, res) => {
 });
 
 // P A T C H
-testsRouter.patch("/update/:id", async (req, res) => {
+fileRouter.patch("/update/:id", async (req, res) => {
   const payload = req.body;
   const id = req.params.id;
-  const test = await TestModel.find({ _id: id });
+  const test = await FileModel.find({ _id: id });
   const userID_in_test = test[0].userID;
   const userID_making_req = req.body.userID;
 
@@ -68,7 +68,7 @@ testsRouter.patch("/update/:id", async (req, res) => {
 
 //P A T C H //  A D D I N G   F I L E S  TO  D B
 
-testsRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
+fileRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
   let id = req.params.id;
 
   let { name, description, excelFile } = req.body;
@@ -84,12 +84,12 @@ testsRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
     console.log("newFile", newFile);
 
     try {
-      const note = await TestModel.findById(id);
+      const note = await FileModel.findById(id);
       console.log("note is =>", newFile);
       if (note) {
         note.notes.push(newFile); // push the newFile object into the notes array
         await note.save(); // save the note
-        let findAllNotes = await TestModel.findOne({ _id: id });
+        let findAllNotes = await FileModel.findOne({ _id: id });
         res.send({ msg: "added file" });
         console.log("note-added");
       } else {
@@ -104,10 +104,10 @@ testsRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
 });
 
 //D E L E T E
-testsRouter.delete("/delete/:id", async (req, res) => {
+fileRouter.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    await TestModel.findByIdAndDelete({ _id: id });
+    await FileModel.findByIdAndDelete({ _id: id });
     res.send("Deleted the Test");
   } catch (err) {
     console.log(err);
@@ -116,5 +116,5 @@ testsRouter.delete("/delete/:id", async (req, res) => {
 });
 
 module.exports = {
-  testsRouter,
+  fileRouter,
 };
