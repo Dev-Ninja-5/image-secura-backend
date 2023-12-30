@@ -1,6 +1,6 @@
 const express = require("express");
 const {FileModel}=require("../models/File.model")
-const { noteData } = require("../controllers/Note.controller");
+
 const multer = require("multer");
 
 const fileRouter = express.Router();
