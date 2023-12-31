@@ -10,7 +10,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // G E T   R E Q U E S T
-fileRouter.get("/alltests", async (req, res) => {
+fileRouter.get("/allfiles", async (req, res) => {
   console.log("inside get req");
   try {
     const files = await FileModel.find();
@@ -25,9 +25,9 @@ fileRouter.get("/alltests", async (req, res) => {
 fileRouter.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const test = await FileModel.findOne({ _id: id });
-    console.log(test);
-    res.status(200).send(test);
+    const file = await FileModel.findOne({ _id: id });
+    console.log(file);
+    res.status(200).send(file);
   } catch (err) {
     console.log(err);
   }
@@ -37,9 +37,9 @@ fileRouter.post("/create", async (req, res) => {
   const payload = req.body;
 
   try {
-    const new_Test = new FileModel(payload);
-    await new_Test.save();
-    res.send({ msg: "Testroom Created" });
+    const new_file = new FileModel(payload);
+    await new_file.save();
+    res.send({ msg: "fileroom Created" });
   } catch (err) {
     console.log(err);
     res.send({ msg: "Something Went Wrong" });
@@ -47,19 +47,19 @@ fileRouter.post("/create", async (req, res) => {
 });
 
 // P A T C H
-fileRouter.patch("/update/:id", async (req, res) => {
+fileRouter.patch("/upload/:id", async (req, res) => {
   const payload = req.body;
   const id = req.params.id;
-  const test = await FileModel.find({ _id: id });
-  const userID_in_test = test[0].userID;
+  const file = await FileModel.find({ _id: id });
+  const userID_in_file = file[0].userID;
   const userID_making_req = req.body.userID;
 
   try {
-    if (userID_making_req !== userID_in_test) {
+    if (userID_making_req !== userID_in_file) {
       res.send({ msg: "You Are Not Authorised" });
     } else {
       await NoteModel.findByIdAndUpdate({ _id: id }, payload);
-      res.send("updated the Test");
+      res.send("updated the file");
     }
   } catch (err) {
     res.send({ msg: "Something Went Wrong" });
@@ -68,8 +68,7 @@ fileRouter.patch("/update/:id", async (req, res) => {
 
 //P A T C H //  A D D I N G   F I L E S  TO  D B
 
-fileRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
-  let id = req.params.id;
+fileRouter.post("/upload", upload.single("file"), async (req, res) => {
 
   let { name } = req.body;
   console.log("name", name);
@@ -80,24 +79,16 @@ fileRouter.patch("/:id/addnote", upload.single("file"), async (req, res) => {
       file: req.file.buffer.toString("base64"),
     };
     console.log("newFile", newFile);
-
-    try {
-      const note = await FileModel.findById(id);
-      console.log("note is =>", newFile);
-      if (note) {
-        note.notes.push(newFile); // push the newFile object into the notes array
-        await note.save(); // save the note
-        let findAllNotes = await FileModel.findOne({ _id: id });
-        res.send({ msg: "added file" });
-        console.log("note-added");
-      } else {
-        res.send("Class Not Found");
-      }
-    } catch (err) {
-      res.send(err);
-    }
+try{
+  const new_file = new FileModel(newFile);
+  await new_file.save();
+  res.send({ msg: "file Uploaded" });
+}catch(err){
+  res.send(err);
+}
   } else {
     console.log(req.body);
+    res.send("Failed to Upload");
   }
 });
 
@@ -106,7 +97,7 @@ fileRouter.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
   try {
     await FileModel.findByIdAndDelete({ _id: id });
-    res.send("Deleted the Test");
+    res.send("Deleted the file");
   } catch (err) {
     console.log(err);
     res.send({ msg: "Something Went Wrong" });

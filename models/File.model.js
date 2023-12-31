@@ -5,7 +5,7 @@ const fileSchema = mongoose.Schema({
   file: {type:String,required:true},
 });
 
-const FileModel = mongoose.model("test", fileSchema);
+const FileModel = mongoose.model("file", fileSchema);
 
 module.exports = {
   FileModel,
