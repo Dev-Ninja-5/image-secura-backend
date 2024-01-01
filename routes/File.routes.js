@@ -12,8 +12,9 @@ const upload = multer({ storage: storage });
 // G E T   R E Q U E S T
 fileRouter.get("/allfiles", async (req, res) => {
   console.log("inside get req");
+  const {userId} = req.body
   try {
-    const files = await FileModel.find();
+    const files = await FileModel.find({ uploadedBy: userId });
     //console.log(files);
     res.status(200).send(files);
   } catch (err) {
@@ -71,12 +72,14 @@ fileRouter.patch("/upload/:id", async (req, res) => {
 fileRouter.post("/upload", upload.single("file"), async (req, res) => {
 
   let { name } = req.body;
-  console.log("name", name);
-  console.log("reqFile", req.file);
+  const userId = req.user._id;
+  //console.log("name", name);
+  //console.log("reqFile", req.file);
   if (req.file) {
     const newFile = {
       name,
       file: req.file.buffer.toString("base64"),
+      uploadedBy: userId,
     };
     console.log("newFile", newFile);
 try{
