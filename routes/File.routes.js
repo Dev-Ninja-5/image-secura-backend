@@ -71,10 +71,8 @@ fileRouter.patch("/upload/:id", async (req, res) => {
 
 fileRouter.post("/upload", upload.single("file"), async (req, res) => {
 
-  let { name } = req.body;
-  const userId = req.user._id;
-  //console.log("name", name);
-  //console.log("reqFile", req.file);
+  let { name,userId } = req.body;
+  
   if (req.file) {
     const newFile = {
       name,
