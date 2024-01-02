@@ -50,9 +50,11 @@ userRouter.post("/login", async (req, res) => {
               expiresIn: "1d",
             }
           );
-          const userId=user._id || "none"
+        
           res.setHeader("Access-Control-Allow-Origin", "*");
-          res.send({ userId: userId, token: token});
+
+          res.send({ msg: "Login Successful", token: token,});
+        
         } else {
           res.send("Wrong Credentials");
         }
