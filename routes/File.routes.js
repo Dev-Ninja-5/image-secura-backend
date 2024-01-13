@@ -77,7 +77,7 @@ fileRouter.post("/upload", upload.single("file"), async (req, res) => {
     const newFile = {
       name,
       file: req.file.buffer.toString("base64"),
-      uploadedBy: userId,
+      uploadedBy: uploadedBy,
     };
     console.log("newFile", newFile);
 try{
