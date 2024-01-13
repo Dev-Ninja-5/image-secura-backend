@@ -71,7 +71,7 @@ fileRouter.patch("/upload/:id", async (req, res) => {
 
 fileRouter.post("/upload", upload.single("file"), async (req, res) => {
 
-  let { name,userId } = req.body;
+  let { name, uploadedBy } = req.body;
   
   if (req.file) {
     const newFile = {
@@ -85,11 +85,11 @@ try{
   await new_file.save();
   res.send({ msg: "file Uploaded" });
 }catch(err){
-  res.send(err);
+  res.status(500).send({ error: err.message });
 }
   } else {
-    console.log(req.body);
-    res.send("Failed to Upload");
+    console.error(err);
+    res.status(500).send({ error: err.message });
   }
 });
 
