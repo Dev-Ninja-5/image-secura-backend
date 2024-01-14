@@ -13,6 +13,7 @@ const authenticate = (req, res, next) => {
 
     if (decoded) {
       req.userID = decoded.userID;
+      req.user = { userId: decoded.userID };
       next();
     } else {
       return res.status(401).send("Please Login");

@@ -1,5 +1,5 @@
 const express = require("express");
-const {FileModel}=require("../models/File.model")
+const { FileModel } = require("../models/File.model");
 
 const multer = require("multer");
 
@@ -12,7 +12,7 @@ const upload = multer({ storage: storage });
 // G E T   R E Q U E S T
 fileRouter.get("/allfiles", async (req, res) => {
   console.log("inside get req");
-  const {userId} = req.body
+  const { userId } = req.body;
   try {
     const files = await FileModel.find({ uploadedBy: userId });
     //console.log(files);
@@ -70,23 +70,23 @@ fileRouter.patch("/upload/:id", async (req, res) => {
 //P A T C H //  A D D I N G   F I L E S  TO  D B
 
 fileRouter.post("/upload", upload.single("file"), async (req, res) => {
+  let { name } = req.body;
+  const { userId } = req.user;
 
-  let { name, uploadedBy } = req.body;
-  
   if (req.file) {
     const newFile = {
       name,
       file: req.file.buffer.toString("base64"),
-      uploadedBy: uploadedBy,
+      uploadedBy: userId,
     };
     console.log("newFile", newFile);
-try{
-  const new_file = new FileModel(newFile);
-  await new_file.save();
-  res.send({ msg: "file Uploaded" });
-}catch(err){
-  res.status(500).send({ error: err.message });
-}
+    try {
+      const new_file = new FileModel(newFile);
+      await new_file.save();
+      res.send({ msg: "file Uploaded" });
+    } catch (err) {
+      res.status(500).send({ error: err.message });
+    }
   } else {
     console.error(err);
     res.status(500).send({ error: err.message });
