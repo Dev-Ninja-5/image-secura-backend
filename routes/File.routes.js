@@ -10,15 +10,14 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // G E T   R E Q U E S T
-fileRouter.get("/allfiles", async (req, res) => {
-  console.log("inside get req");
-  const { userId } = req.body;
+fileRouter.get("/files/:userId", async (req, res) => {
   try {
+    const userId = req.params.userId;
     const files = await FileModel.find({ uploadedBy: userId });
-    //console.log(files);
-    res.status(200).send(files);
-  } catch (err) {
-    console.log(err);
+    res.status(200).json(files);
+  } catch (error) {
+    console.error("Error while fetching files:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
