@@ -8,7 +8,7 @@ const userRouter = express.Router();
 // R  E  G  I  S  T  E  R
 
 userRouter.post("/register", async (req, res) => {
-  const { name, email,mobile, password } = req.body;
+  const { name, email, mobile, password } = req.body;
 
   // H A S H I N G
   try {
@@ -18,7 +18,8 @@ userRouter.post("/register", async (req, res) => {
       } else {
         const user = new UserModel({
           name,
-          email,mobile,
+          email,
+          mobile,
           password: hashed_password,
         });
         await user.save();
@@ -50,11 +51,10 @@ userRouter.post("/login", async (req, res) => {
               expiresIn: "1d",
             }
           );
-        
-          res.setHeader("Access-Control-Allow-Origin", "*");
 
-          res.send({ msg: "Login Successful", token: token,});
-        
+          res.setHeader("Access-Control-Allow-Origin", "*");
+          const userId = user[0]._id;
+          res.send({ msg: "Login Successful", token: token, userId: userId });
         } else {
           res.send("Wrong Credentials");
         }
